@@ -5,25 +5,29 @@ from random import random
 
 # a class which manages vectors such as points in 3D space
 class Vertex:
-    def __init__(self, x = 0, y = 0, z = 0, c = (255,255,255)):
+    def __init__(self, 
+                    x: float = 0.0, 
+                    y: float = 0.0, 
+                    z: float = 0.0, 
+                    c: tuple[int, int, int] = (255,255,255)):
         self.x = x
         self.y = y
         self.z = z
         self.c = c # color, only used sometimes
         
-    def add(self,v):
+    def add(self, v: "Vertex"):
         sum = self.copy()
         sum.x += v.x
         sum.y += v.y
         sum.z += v.z
         return sum
     
-    def become(self,v):
+    def become(self, v: "Vertex"):
         self.x = v.x
         self.y = v.y
         self.z = v.z
         
-    def distance_to(self, v):
+    def distance_to(self, v: "Vertex"):
         return sqrt((v.x -self.x)**2 + (v.y -self.y)**2 + (v.z -self.z)**2)
         
     
@@ -35,11 +39,15 @@ class Vertex:
 
 class SM3DWFRPG: # Super Minimal 3D Wireframe Renderer in Pygame
     
-    def __init__(self, screen_res = (500, 500), bg_color = (255,255,255), fov = 70, offset = Vertex(0,0,0)):
+    def __init__(self, 
+                    screen_res = (500, 500), 
+                    bg_color = (255,255,255), 
+                    fov = 70.0, 
+                    offset = Vertex(0.0 , 0.0, 0.0)):
     
         self.SCREEN_RES = screen_res
-        self.BG_COLOR = bg_color
         self.FOV = (fov/180)*3.14 # converting deg to rad
+        self.bg_color = bg_color
         self.offset = offset
         
         # pygame stuff
@@ -48,7 +56,7 @@ class SM3DWFRPG: # Super Minimal 3D Wireframe Renderer in Pygame
         self.clock = pygame.time.Clock()
         pygame.display.set_caption('SM3DWFRPG')
         
-        self.renderQueue = [] # an array which stores either 3D points or lines, which should be rendered in the current frame
+        self.render_queue = [] # an array which stores either 3D points or lines, which should be rendered in the current frame
         
         # precalulations for the projection of 3D points or lines to the 2D screen
         self._Yinv_tan_f2 = 1/(tan(self.FOV/2))
@@ -57,28 +65,30 @@ class SM3DWFRPG: # Super Minimal 3D Wireframe Renderer in Pygame
     def draw(self):
         # pygame stuff
         pygame.display.update()
-        pygame.event.pump()
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                running = False
         
         self.clock.tick(60)
         
-        self.screen.fill(self.BG_COLOR)
+        self.screen.fill(self.bg_color)
         
-        for call in self.renderQueue:
-            if isinstance(call,Vertex): # 3D point stored in renderQueue as Vertex object
+        for call in self.render_queue:
+            if isinstance(call,Vertex): # 3D point stored in render_queue as Vertex object
                 
-                x, y = self.convertTo2D(call.add(self.offset))
+                x, y = self.convert_to_2d(call.add(self.offset))
                 self.screen.set_at((x,y), call.c)
                 
             if isinstance(call, tuple): # 3D line stored as a tuple of two Vertex objects
-                p0 = (self.convertTo2D(call[0].add(self.offset)))
-                p1 = (self.convertTo2D(call[1].add(self.offset)))
+                p0 = (self.convert_to_2d(call[0].add(self.offset)))
+                p1 = (self.convert_to_2d(call[1].add(self.offset)))
                 
                 pygame.draw.line(self.screen, call[0].c, p0, p1)
     
-        self.renderQueue.clear()
+        self.render_queue.clear()
         
     
-    def convertTo2D(self, v): # multiplying a 3-dimensional vector by the projection matrix
+    def convert_to_2d(self, v): # multiplying a 3-dimensional vector by the projection matrix
         
         x = (v.x*self._Xtimes_aspect)/v.z
         y = (v.y*self._Yinv_tan_f2)/v.z
@@ -88,11 +98,14 @@ class SM3DWFRPG: # Super Minimal 3D Wireframe Renderer in Pygame
         
         return int(x), int(y) # screen space coordinates should always be int
 
-    # functions to add certain objects to the renderQueue
-    def point(self,point):
-        self.renderQueue.append(point)
+    # functions to add certain objects to the render_queue
+    def point(self, point):
+        self.render_queue.append(point)
+    
+    def line(self, p0, p1):
+        self.render_queue.append((p0, p1))
 
-    def cube(self, point, a, rot_y = 0, color = (255,255,255)): # a - side length
+    def cube(self, point, a, rot_y = 0.0, color = (255,255,255)): # a - side length
         A = Vertex(0,0,0,color)
         
         B = Vertex(0,0,a,color)
@@ -138,10 +151,13 @@ class SM3DWFRPG: # Super Minimal 3D Wireframe Renderer in Pygame
         lines.append((C,G))
         lines.append((D,H))
         
-        self.renderQueue.extend(lines)
+        self.render_queue.extend(lines)
         
         
-    def sphere(self, point, r, color=(255,255,255), rot_y = 0, alp_inc = 6.28/20, bet_inc = 6.28/10):
+    def sphere(self, point, r, rot_y = 0.0, color=(255,255,255)):
+        alp_inc = 6.28/20
+        bet_inc = 6.28/10
+        
         points = []
         
         # "standing" circles
@@ -178,4 +194,4 @@ class SM3DWFRPG: # Super Minimal 3D Wireframe Renderer in Pygame
                 
                 p.become(v)
         
-        self.renderQueue.extend(points)
+        self.render_queue.extend(points)
