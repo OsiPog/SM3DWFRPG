@@ -1,4 +1,5 @@
 import pygame
+import sys
 from math import sqrt, sin, cos, tan
 from random import random
 
@@ -67,7 +68,7 @@ class SM3DWFRPG: # Super Minimal 3D Wireframe Renderer in Pygame
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                sys.exit()
         
         self.clock.tick(60)
         
