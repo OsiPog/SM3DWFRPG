@@ -65,7 +65,7 @@ class SM3DWFRPG: # Super Minimal 3D Wireframe Renderer in Pygame
     def draw(self):
         # pygame stuff
         pygame.display.update()
-        for event in pg.event.get():
+        for event in pygame.event.get():
             if event.type == pg.QUIT:
                 running = False
         
