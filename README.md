@@ -11,4 +11,4 @@ Download "SM3DWFRPG.py" and add it to your project or add this repo as a depende
 
 ## Documentation
 
-*See* [*here*](https://github.com/osipog/sm3dwfrpg/docs.md)
+*See* [*here*](https://github.com/OsiPog/SM3DWFRPG/blob/master/docs.md)
