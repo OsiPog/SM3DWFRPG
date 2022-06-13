@@ -66,7 +66,7 @@ class SM3DWFRPG: # Super Minimal 3D Wireframe Renderer in Pygame
         # pygame stuff
         pygame.display.update()
         for event in pygame.event.get():
-            if event.type == pg.QUIT:
+            if event.type == pygame.QUIT:
                 running = False
         
         self.clock.tick(60)
