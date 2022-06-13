@@ -64,9 +64,9 @@ This method will update and draw all contents of the `render_queue` list to the 
 ###### `SM3DWFRPG.convert_to_2d(v)`
 
 This function takes a 3D vertex and converts it to a point on the screen using the `FOV` and the `offset`. The vertex `v` is multiplied by the projection matrix which is defined as:
-$$
-M_{projection} = \left(\begin{matrix}\frac{height}{width} *\frac{1}{\tan(\frac{fov}2)} & 0 & 0 \\ 0 & \frac{1}{\tan(\frac{fov}2)} & 0 \\ 0 & 0 &1\end{matrix}\right)
-$$
+
+$$ M_{projection} = \left(\begin{matrix}\frac{height}{width} *\frac{1}{\tan(\frac{fov}2)} & 0 & 0 \\ 0 & \frac{1}{\tan(\frac{fov}2)} & 0 \\ 0 & 0 &1\end{matrix}\right) $$
+
 To get the final x and y-value divide the both by the remaining z-value.
 
 ###### `SM3DWFRPG.point(point)`
